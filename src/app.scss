@@ -4,3 +4,99 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@media (min-width: 1350px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl {
+    max-width: 1300px !important;
+  }
+}
+.app-container {
+  .header-container {
+    .btn-login {
+      border-radius: 5px;
+      margin-right: 15px;
+      padding: 0 15px;
+      border: 1px solid #535353;
+      outline: none;
+      height: 40px;
+    }
+
+    .btn-signup {
+      border-radius: 5px;
+      margin-right: 15px;
+      padding: 0 15px;
+      color: #fff;
+      background: #303030;
+      outline: none;
+      height: 40px;
+
+      &:hover {
+        background: #000;
+      }
+    }
+
+    .navbar {
+      padding-top: 20px;
+      z-index: 10;
+      // opacity: 0.6;
+      background-color: rgba(0, 0, 0, 0) !important;
+      .nav-link {
+        &.active {
+          color: #12f4;
+        }
+      }
+    }
+  }
+
+  .homepage-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .video-wrapper {
+      flex: 1;
+
+      video {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+      }
+    }
+
+    .homepage-content {
+      flex: 1;
+      padding-left: 10px;
+      position: relative;
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      .title-1 {
+        font-size: 40px;
+        font-weight: 600;
+      }
+      .title-2 {
+        font-size: 25px;
+      }
+      .title-3 {
+        button {
+          border-radius: 5px;
+          margin-right: 15px;
+          padding: 0 15px;
+          color: #fff;
+          background: #303030;
+          outline: none;
+          height: 40px;
+          border: none;
+          &:hover {
+            background: #000;
+          }
+        }
+      }
+    }
+  }
+}
