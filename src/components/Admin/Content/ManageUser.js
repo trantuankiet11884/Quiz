@@ -4,15 +4,27 @@ import ModalCreateUser from "./ModalCreateUser";
 import "./manageUser.scss";
 import { FaPlusCircle } from "react-icons/fa";
 import TableUser from "./TableUser";
+import ModalUpdateUser from "./ModalUpdateUser";
 const ManageUser = (props) => {
   const [showModalCreateUser, setShowModalCreateUser] = useState(false);
+  const [showModalUpdateUser, setShowModalUpdateUser] = useState(false);
   const [listUsers, setListUsers] = useState([]);
+  const [dataUpdate, setDataUpdate] = useState({});
 
   const fetchAllUsers = async () => {
     let data = await getAllUsers();
     if (data.EC === 0) {
       setListUsers(data.DT.reverse());
     }
+  };
+
+  const handleClickBtnUpdateUser = (user) => {
+    setShowModalUpdateUser(true);
+    setDataUpdate(user);
+  };
+
+  const resetUpdateData = () => {
+    setDataUpdate({});
   };
 
   useEffect(() => {
@@ -32,12 +44,22 @@ const ManageUser = (props) => {
           </button>
         </div>
         <div className="table-user-container">
-          <TableUser listUsers={listUsers} />
+          <TableUser
+            listUsers={listUsers}
+            handleClickBtnUpdateUser={handleClickBtnUpdateUser}
+          />
         </div>
         <ModalCreateUser
           show={showModalCreateUser}
           setShow={setShowModalCreateUser}
           fetchAllUsers={fetchAllUsers}
+        />
+        <ModalUpdateUser
+          show={showModalUpdateUser}
+          setShow={setShowModalUpdateUser}
+          dataUpdate={dataUpdate}
+          fetchAllUsers={fetchAllUsers}
+          resetUpdateData={resetUpdateData}
         />
       </div>
     </div>
