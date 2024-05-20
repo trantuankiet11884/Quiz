@@ -31,10 +31,15 @@ const getUserWithPaginate = (page, limit) => {
   return instance.get(`api/v1/participant?page=${page}&limit=${limit}`);
 };
 
+const postLogin = (email, password) => {
+  return instance.post("api/v1/login", { email, password });
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
   putUpdateNewUser,
   deleteUser,
   getUserWithPaginate,
+  postLogin,
 };
