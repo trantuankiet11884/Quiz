@@ -27,4 +27,14 @@ const deleteUser = (userId) => {
   return instance.delete("api/v1/participant", { data: { id: userId } });
 };
 
-export { postCreateNewUser, getAllUsers, putUpdateNewUser, deleteUser };
+const getUserWithPaginate = (page, limit) => {
+  return instance.get(`api/v1/participant?page=${page}&limit=${limit}`);
+};
+
+export {
+  postCreateNewUser,
+  getAllUsers,
+  putUpdateNewUser,
+  deleteUser,
+  getUserWithPaginate,
+};
