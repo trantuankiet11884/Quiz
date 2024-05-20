@@ -5,11 +5,14 @@ import "./manageUser.scss";
 import { FaPlusCircle } from "react-icons/fa";
 import TableUser from "./TableUser";
 import ModalUpdateUser from "./ModalUpdateUser";
+import ModalDeleteUser from "./ModalDeleteUser";
 const ManageUser = (props) => {
   const [showModalCreateUser, setShowModalCreateUser] = useState(false);
   const [showModalUpdateUser, setShowModalUpdateUser] = useState(false);
+  const [showModalDeleteUser, setShowModalDeleteUser] = useState(false);
   const [listUsers, setListUsers] = useState([]);
   const [dataUpdate, setDataUpdate] = useState({});
+  const [dataDelete, setDataDelete] = useState({});
 
   const fetchAllUsers = async () => {
     let data = await getAllUsers();
@@ -25,6 +28,11 @@ const ManageUser = (props) => {
 
   const resetUpdateData = () => {
     setDataUpdate({});
+  };
+
+  const handleClickDeleteUser = (user) => {
+    setShowModalDeleteUser(true);
+    setDataDelete(user);
   };
 
   useEffect(() => {
@@ -47,6 +55,7 @@ const ManageUser = (props) => {
           <TableUser
             listUsers={listUsers}
             handleClickBtnUpdateUser={handleClickBtnUpdateUser}
+            handleClickDeleteUser={handleClickDeleteUser}
           />
         </div>
         <ModalCreateUser
@@ -60,6 +69,13 @@ const ManageUser = (props) => {
           dataUpdate={dataUpdate}
           fetchAllUsers={fetchAllUsers}
           resetUpdateData={resetUpdateData}
+        />
+
+        <ModalDeleteUser
+          show={showModalDeleteUser}
+          setShow={setShowModalDeleteUser}
+          dataDelete={dataDelete}
+          fetchAllUsers={fetchAllUsers}
         />
       </div>
     </div>
