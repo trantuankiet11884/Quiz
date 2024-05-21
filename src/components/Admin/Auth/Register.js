@@ -1,12 +1,15 @@
 import { useState } from "react";
-import "./login.scss";
+import "./register.scss";
 import { useNavigate } from "react-router-dom";
-import { postLogin } from "../../../services/apiService";
 import { toast } from "react-toastify";
-
-const Login = (props) => {
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import { postRegister } from "../../../services/apiService";
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [isShowPassword, setIsShowPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -17,7 +20,7 @@ const Login = (props) => {
       );
   };
 
-  const handleSubmitLogin = async () => {
+  const handleSubmitRegister = async () => {
     const isValidEmail = validateEmail(email);
 
     if (!isValidEmail) {
@@ -30,10 +33,15 @@ const Login = (props) => {
       return;
     }
 
-    let data = await postLogin(email, password);
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+
+    let data = await postRegister(email, password, username);
     if (data && +data.EC === 0) {
       toast.success(data.EM);
-      navigate("/");
+      navigate("/login");
     }
 
     if (data && +data.EC !== 0) {
@@ -42,12 +50,8 @@ const Login = (props) => {
   };
 
   return (
-    <div className="login-container">
-      <div className="header">
-        <span>Don't have a acctoun yet?</span>
-        <button onClick={() => navigate("/register")}>Sign up</button>
-      </div>
-      <div className="title col-4 mx-auto">Login</div>
+    <div className="register-container">
+      <div className="title col-4 mx-auto">Register</div>
       <div className="welcom col-4 mx-auto">Hello, who's this?</div>
       <div className="content-form col-4 mx-auto">
         <div className="form-group">
@@ -61,19 +65,42 @@ const Login = (props) => {
           />
         </div>
         <div className="form-group">
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            className="form-control"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div className="form-group pass-group">
           <label htmlFor="password">Password</label>
           <input
-            type="password"
+            type={isShowPassword ? "text" : "password"}
             id="password"
             className="form-control"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+
+          {isShowPassword ? (
+            <span
+              className="icons-eye"
+              onClick={() => setIsShowPassword(false)}
+            >
+              <VscEye />
+            </span>
+          ) : (
+            <span className="icons-eye" onClick={() => setIsShowPassword(true)}>
+              <VscEyeClosed />
+            </span>
+          )}
         </div>
         <span className="forgot-password">Forgot password?</span>
         <div>
-          <button className="btn-submit" onClick={() => handleSubmitLogin()}>
-            Login
+          <button className="btn-submit" onClick={() => handleSubmitRegister()}>
+            Register
           </button>
         </div>
         <div className="back text-center">
@@ -84,4 +111,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default Register;

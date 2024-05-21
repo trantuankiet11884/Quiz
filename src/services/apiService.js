@@ -35,6 +35,10 @@ const postLogin = (email, password) => {
   return instance.post("api/v1/login", { email, password });
 };
 
+const postRegister = (email, password, username) => {
+  return instance.post("api/v1/register", { email, password, username });
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -42,4 +46,5 @@ export {
   deleteUser,
   getUserWithPaginate,
   postLogin,
+  postRegister,
 };

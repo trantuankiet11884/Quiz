@@ -9,6 +9,7 @@ import Login from "./components/Admin/Auth/Login";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Register from "./components/Admin/Auth/Register";
 export const Layout = (props) => {
   return (
     <>
@@ -22,6 +23,7 @@ export const Layout = (props) => {
           <Route path="manage-user" element={<ManageUser />} />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
 
       <ToastContainer
