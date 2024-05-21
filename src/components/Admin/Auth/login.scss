@@ -45,6 +45,11 @@
       color: #fff;
       background: #000;
     }
+    &:disabled {
+      background: #ccc !important;
+      color: #afafaf !important;
+      cursor: no-drop !important;
+    }
   }
 
   .forgot-password {
@@ -54,6 +59,20 @@
   .back {
     span {
       cursor: pointer;
+    }
+  }
+
+  .loader-icon {
+    font-size: 14px;
+    margin-bottom: 3px;
+    animation: spin 1s infinite linear;
+  }
+  @keyframes spin {
+    from {
+      transform: scale(1) rotate(0deg);
+    }
+    to {
+      transform: scale(1) rotate(360deg);
     }
   }
 }
