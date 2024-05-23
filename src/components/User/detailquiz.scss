@@ -16,6 +16,7 @@
       .question {
         font-size: 24px;
         font-weight: 600;
+        padding: 20px 0;
       }
 
       .q-image {
@@ -23,17 +24,27 @@
         img {
           width: 100%;
           height: 300px;
+          object-fit: cover;
+        }
+      }
+
+      .answer {
+        .a-child {
         }
       }
     }
 
     .footer {
       display: flex;
+      margin-top: 24px;
       gap: 15px;
       justify-content: center;
     }
   }
-  .right.content {
+  .right-content {
     width: 30%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
   }
 }

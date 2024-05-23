@@ -2,11 +2,16 @@ import React from "react";
 import _ from "lodash";
 
 const Question = (props) => {
-  const { dataQuiz, index } = props;
+  const { dataQuiz, index, handleCheckedBox } = props;
 
   if (_.isEmpty(dataQuiz)) {
     return <></>;
   }
+
+  const handleCheckBox = (e, aId, qId) => {
+    console.log(aId, qId);
+    handleCheckedBox(aId, qId);
+  };
 
   return (
     <>
@@ -32,7 +37,10 @@ const Question = (props) => {
                     <input
                       type="checkbox"
                       className="form-check-input"
-                      value=""
+                      checked={answer.isSelected}
+                      onChange={(e) =>
+                        handleCheckBox(e, answer.id, dataQuiz.questionId)
+                      }
                       id={answer.id}
                     />
                     <label htmlFor={answer.id}>{answer.description}</label>
