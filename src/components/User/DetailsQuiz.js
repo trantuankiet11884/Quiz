@@ -1,13 +1,16 @@
 import "./detailquiz.scss";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { getDataQuiz } from "../../services/apiService";
 import _ from "lodash";
+import Question from "./Question";
 const DetailsQuiz = (props) => {
   const location = useLocation();
   const { id } = useParams();
   const quizId = id;
-  console.log(location);
+
+  const [dataQuiz, setDataQuiz] = useState([]);
+  const [index, setIndex] = useState(0);
   useEffect(() => {
     fetchQuestions();
   }, [id]);
@@ -31,7 +34,16 @@ const DetailsQuiz = (props) => {
           return { questionId: key, answers, questionDescription, image };
         })
         .value();
+      setDataQuiz(data);
     }
+  };
+
+  const handleClickPrev = () => {
+    if (index - 1 < 0) return;
+    setIndex(index - 1);
+  };
+  const handleClickNext = () => {
+    if (dataQuiz && dataQuiz.length > index + 1) setIndex(index + 1);
   };
   return (
     <div className="detail-quiz-container container">
@@ -44,16 +56,21 @@ const DetailsQuiz = (props) => {
           <img src="" alt="" />
         </div>
         <div className="q-content">
-          <div className="question">Question 1: what should you do?</div>
-          <div className="answer">
-            <div className="a-child">A. 1</div>
-            <div className="a-child">B. 1</div>
-            <div className="a-child">C. 1</div>
-          </div>
+          <Question
+            dataQuiz={dataQuiz && dataQuiz.length > 0 ? dataQuiz[index] : []}
+            index={index}
+          />
         </div>
         <div className="footer">
-          <button className="btn btn-default">Prev</button>
-          <button className="btn btn-secondary">Next</button>
+          <button className="btn btn-default" onClick={() => handleClickPrev()}>
+            Prev
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => handleClickNext()}
+          >
+            Next
+          </button>
         </div>
       </div>
       <div className="right-content">count down</div>
