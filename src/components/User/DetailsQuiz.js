@@ -1,9 +1,12 @@
 import "./detailquiz.scss";
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { getDataQuiz } from "../../services/apiService";
+import { getDataQuiz, postSubmitQuiz } from "../../services/apiService";
 import _ from "lodash";
 import Question from "./Question";
+import { toast } from "react-toastify";
+import ModalResult from "./ModalResult";
+
 const DetailsQuiz = (props) => {
   const location = useLocation();
   const { id } = useParams();
@@ -11,9 +14,13 @@ const DetailsQuiz = (props) => {
 
   const [dataQuiz, setDataQuiz] = useState([]);
   const [index, setIndex] = useState(0);
+  const [isShowModalResuslt, setIsShowModalResult] = useState(false);
+  const [dataModalResult, setDataModalResult] = useState({});
+
   useEffect(() => {
     fetchQuestions();
   }, [id]);
+
   const fetchQuestions = async () => {
     let rs = await getDataQuiz(quizId);
     if (rs && rs.EC === 0) {
@@ -68,6 +75,46 @@ const DetailsQuiz = (props) => {
       setDataQuiz(dataQuizClone);
     }
   };
+
+  const handleClickFinish = async () => {
+    let payload = {
+      quizId: +quizId,
+      answers: [],
+    };
+
+    let answers = [];
+    if (dataQuiz && dataQuiz.length > 0) {
+      dataQuiz.forEach((data) => {
+        let questionId = data.questionId;
+        let userAnswerId = [];
+
+        data.answers.forEach((a) => {
+          if (a.isSelected) {
+            userAnswerId.push(a.id);
+          }
+        });
+
+        answers.push({
+          questionId: +questionId,
+          userAnswerId: userAnswerId,
+        });
+      });
+      payload.answers = answers;
+      let rs = await postSubmitQuiz(payload);
+
+      if (rs && rs.EC === 0) {
+        setIsShowModalResult(true);
+        setDataModalResult({
+          countCorrect: rs?.DT?.countCorrect,
+          countTotal: rs?.DT?.countTotal,
+          quizData: rs?.DT?.quizData,
+        });
+      } else {
+        toast.error(rs.EM);
+      }
+    }
+  };
+
   return (
     <div className="detail-quiz-container container">
       <div className="left-content">
@@ -95,9 +142,20 @@ const DetailsQuiz = (props) => {
           >
             Next
           </button>
+          <button
+            className="btn btn-success"
+            onClick={() => handleClickFinish()}
+          >
+            Finish
+          </button>
         </div>
       </div>
       <div className="right-content">count down</div>
+      <ModalResult
+        show={isShowModalResuslt}
+        setShow={setIsShowModalResult}
+        dataModalResult={dataModalResult}
+      />
     </div>
   );
 };

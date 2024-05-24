@@ -9,7 +9,6 @@ const Question = (props) => {
   }
 
   const handleCheckBox = (e, aId, qId) => {
-    console.log(aId, qId);
     handleCheckedBox(aId, qId);
   };
 
