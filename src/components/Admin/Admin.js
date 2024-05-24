@@ -12,7 +12,11 @@ const Admin = (props) => {
       </div>
       <div className="admin-content">
         <div className="admin-header">
-          <FaBars size={24} onClick={() => setCollapsed(!collapsed)} />A
+          <FaBars
+            size={24}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{ cursor: "pointer" }}
+          />
         </div>
         <div className="admin-main">
           <Outlet />

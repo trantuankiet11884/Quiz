@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const AdminSideBar = (props) => {
-  const { image, collapsed, toggle, handleToggleSidebar } = props;
+  const { collapsed, toggle, handleToggleSidebar } = props;
   const navigate = useNavigate();
 
   return (
@@ -42,10 +42,18 @@ const AdminSideBar = (props) => {
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
+              textAlign: "center",
             }}
           >
-            <FaHeart size={"3em"} color="white" />
-            &nbsp; TK
+            <span
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/")}
+            >
+              <FaHeart size={"3em"} color="white" />
+              &nbsp; TK
+            </span>
           </div>
           <SidebarContent>
             <Menu iconShape="circle">
@@ -61,7 +69,10 @@ const AdminSideBar = (props) => {
                   <Link to="/admin/manage-user" />
                 </MenuItem>
                 <MenuItem>Admin</MenuItem>
-                <MenuItem>Quiz</MenuItem>
+                <MenuItem>
+                  Quiz
+                  <Link to="/admin/manage-quizzes" />
+                </MenuItem>
               </SubMenu>
             </Menu>
           </SidebarContent>
