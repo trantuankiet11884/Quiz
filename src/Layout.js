@@ -16,6 +16,7 @@ import DetailsQuiz from "./components/User/DetailsQuiz";
 import { useNavigate } from "react-router-dom";
 import "./notfound.scss";
 import ManageQuiz from "./components/Admin/Content/Quiz/ManageQuiz";
+import Questions from "./components/Admin/Content/Question/Questions";
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ export const Layout = (props) => {
           <Route index element={<Dashboard />} />
           <Route path="manage-user" element={<ManageUser />} />
           <Route path="manage-quizzes" element={<ManageQuiz />} />
+          <Route path="manage-questions" element={<Questions />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
