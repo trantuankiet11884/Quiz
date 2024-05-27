@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./questions.scss";
 import Select from "react-select";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
+import { RiImageAddFill } from "react-icons/ri";
+
 const Questions = (props) => {
   const options = [
     { value: "EASY", label: "EASY" },
@@ -14,24 +16,27 @@ const Questions = (props) => {
   return (
     <div className="questions-container">
       <div className="title">Manage Question</div>
+      <hr />
       <div className="add-new-question">
         <div className="col-6 form-group">
-          <label>Select Quiz</label>
+          <label className="mb-2">Select Quiz</label>
           <Select
             options={options}
             onChange={setSelectedQuiz}
             defaultValue={selectedQuiz}
           />
         </div>
-        <div className="mt-3">Add Questions:</div>
+        <div className="mt-3 mb-2">Add Questions:</div>
         <div>
           <div className="questions-content">
             <div className="form-floating description">
               <input type="text" className="form-control" placeholder="Name" />
-              <label>Description</label>
+              <label>Questions Description</label>
             </div>
             <div className="group-upload">
-              <label className="label-upload">Upload Image</label>
+              <label className="label-upload">
+                <RiImageAddFill size={24} color="#5a5f92" />
+              </label>
               <input type="file" hidden />
               <span>No file is uploaded</span>
             </div>
