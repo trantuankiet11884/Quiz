@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./manageQuiz.scss";
 import Select from "react-select";
-
+import { postCreateNewQuiz } from "../../../../services/apiService";
+import { toast } from "react-toastify";
 const options = [
   { value: "EASY", label: "EASY" },
   { value: "MEDIUM", label: "MEDIUM" },
@@ -11,10 +12,34 @@ const options = [
 const ManageQuiz = (props) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [type, setType] = useState("EASY");
-  const [image, setImage] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+  const [image, setImage] = useState(null);
 
-  const handleChangeFile = (e) => {};
+  const handleChangeFile = (e) => {
+    if (e.target && e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleSubmitQuiz = async () => {
+    if (!name || !description)
+      return toast.error("Name/Description is required!!!");
+    const rs = await postCreateNewQuiz(
+      name,
+      description,
+      image,
+      difficulty?.value
+    );
+    if (rs && rs.EC === 0) {
+      toast.success(rs.EM);
+      setName("");
+      setDescription("");
+      setImage(null);
+      setDifficulty("");
+    } else {
+      toast.error(rs.EM);
+    }
+  };
 
   return (
     <div className="quiz-container">
@@ -44,7 +69,12 @@ const ManageQuiz = (props) => {
             <label>Description</label>
           </div>
           <div className="my-3">
-            <Select options={options} value={type} placeholder="Quiz Type" />
+            <Select
+              options={options}
+              onChange={setDifficulty}
+              value={difficulty}
+              placeholder="Quiz Type"
+            />
           </div>
           <div className="more-action ">
             <input
@@ -52,6 +82,14 @@ const ManageQuiz = (props) => {
               className="form-control"
               onChange={(e) => handleChangeFile(e)}
             />
+          </div>
+          <div className="mt-3">
+            <button
+              className="btn btn-warning"
+              onClick={() => handleSubmitQuiz()}
+            >
+              Save
+            </button>
           </div>
         </fieldset>
       </div>
