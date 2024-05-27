@@ -3,6 +3,9 @@ import "./manageQuiz.scss";
 import Select from "react-select";
 import { postCreateNewQuiz } from "../../../../services/apiService";
 import { toast } from "react-toastify";
+import TableQuiz from "./TableQuiz";
+import Acccordion from "react-bootstrap/Accordion";
+
 const options = [
   { value: "EASY", label: "EASY" },
   { value: "MEDIUM", label: "MEDIUM" },
@@ -43,57 +46,68 @@ const ManageQuiz = (props) => {
 
   return (
     <div className="quiz-container">
-      <div className="title">Manage Quizzes</div>
-      <hr />
-      <div className="add-new">
-        <fieldset className="border rounded-3 p-3">
-          <legend className="float-none w-auto px-3">Add New Quiz</legend>
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              className="form-control"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Name"
-            />
-            <label>Name</label>
-          </div>
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              className="form-control"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Description"
-            />
-            <label>Description</label>
-          </div>
-          <div className="my-3">
-            <Select
-              options={options}
-              onChange={setDifficulty}
-              value={difficulty}
-              placeholder="Quiz Type"
-            />
-          </div>
-          <div className="more-action ">
-            <input
-              type="file"
-              className="form-control"
-              onChange={(e) => handleChangeFile(e)}
-            />
-          </div>
-          <div className="mt-3">
-            <button
-              className="btn btn-warning"
-              onClick={() => handleSubmitQuiz()}
-            >
-              Save
-            </button>
-          </div>
-        </fieldset>
+      <Acccordion>
+        <Acccordion.Item>
+          <Acccordion.Header>
+            <div className="title">Manage Quizzes</div>
+          </Acccordion.Header>
+
+          <Acccordion.Body>
+            <div className="add-new">
+              <fieldset className="border rounded-3 p-3">
+                <legend className="float-none w-auto px-3">Add New Quiz</legend>
+                <div className="form-floating mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Name"
+                  />
+                  <label>Name</label>
+                </div>
+                <div className="form-floating mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Description"
+                  />
+                  <label>Description</label>
+                </div>
+                <div className="my-3">
+                  <Select
+                    options={options}
+                    onChange={setDifficulty}
+                    value={difficulty}
+                    placeholder="Quiz Type"
+                  />
+                </div>
+                <div className="more-action ">
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(e) => handleChangeFile(e)}
+                  />
+                </div>
+                <div className="mt-3">
+                  <button
+                    className="btn btn-warning"
+                    onClick={() => handleSubmitQuiz()}
+                  >
+                    Save
+                  </button>
+                </div>
+              </fieldset>
+            </div>
+          </Acccordion.Body>
+        </Acccordion.Item>
+      </Acccordion>
+
+      <div className="list-detail">
+        <TableQuiz />
       </div>
-      <div className="list-detail"></div>
     </div>
   );
 };

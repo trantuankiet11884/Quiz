@@ -60,6 +60,10 @@ const postCreateNewQuiz = (description, name, image, difficulty) => {
   return instance.post("api/v1/quiz", data);
 };
 
+const getAllQuiz = () => {
+  return instance.get(`api/v1/quiz/all`);
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -72,4 +76,5 @@ export {
   getDataQuiz,
   postSubmitQuiz,
   postCreateNewQuiz,
+  getAllQuiz,
 };
