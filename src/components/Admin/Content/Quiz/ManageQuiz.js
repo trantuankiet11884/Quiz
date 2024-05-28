@@ -4,7 +4,7 @@ import Select from "react-select";
 import { postCreateNewQuiz } from "../../../../services/apiService";
 import { toast } from "react-toastify";
 import TableQuiz from "./TableQuiz";
-import Acccordion from "react-bootstrap/Accordion";
+import Accordion from "react-bootstrap/Accordion";
 
 const options = [
   { value: "EASY", label: "EASY" },
@@ -12,11 +12,12 @@ const options = [
   { value: "HARD", label: "HARD" },
 ];
 
-const ManageQuiz = (props) => {
+const ManageQuiz = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [image, setImage] = useState(null);
+  const [quizzes, setQuizzes] = useState([]);
 
   const handleChangeFile = (e) => {
     if (e.target && e.target.files && e.target.files[0]) {
@@ -35,6 +36,16 @@ const ManageQuiz = (props) => {
     );
     if (rs && rs.EC === 0) {
       toast.success(rs.EM);
+      setQuizzes((prevQuizzes) => [
+        ...prevQuizzes,
+        {
+          id: rs.DT.id, // Assuming the API response includes the new quiz ID in rs.DT.id
+          name,
+          description,
+          difficulty: difficulty.value,
+          image,
+        },
+      ]);
       setName("");
       setDescription("");
       setImage(null);
@@ -46,13 +57,12 @@ const ManageQuiz = (props) => {
 
   return (
     <div className="quiz-container">
-      <Acccordion>
-        <Acccordion.Item>
-          <Acccordion.Header>
+      <Accordion>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>
             <div className="title">Manage Quizzes</div>
-          </Acccordion.Header>
-
-          <Acccordion.Body>
+          </Accordion.Header>
+          <Accordion.Body>
             <div className="add-new">
               <fieldset className="border rounded-3 p-3">
                 <legend className="float-none w-auto px-3">Add New Quiz</legend>
@@ -88,25 +98,24 @@ const ManageQuiz = (props) => {
                   <input
                     type="file"
                     className="form-control"
-                    onChange={(e) => handleChangeFile(e)}
+                    onChange={handleChangeFile}
                   />
                 </div>
                 <div className="mt-3 text-end">
                   <button
                     className="btn btn-warning"
-                    onClick={() => handleSubmitQuiz()}
+                    onClick={handleSubmitQuiz}
                   >
                     Save
                   </button>
                 </div>
               </fieldset>
             </div>
-          </Acccordion.Body>
-        </Acccordion.Item>
-      </Acccordion>
-
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
       <div className="list-detail">
-        <TableQuiz />
+        <TableQuiz quizzes={quizzes} setQuizzes={setQuizzes} />
       </div>
     </div>
   );
