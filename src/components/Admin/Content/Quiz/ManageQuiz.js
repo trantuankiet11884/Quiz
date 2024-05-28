@@ -91,7 +91,7 @@ const ManageQuiz = (props) => {
                     onChange={(e) => handleChangeFile(e)}
                   />
                 </div>
-                <div className="mt-3">
+                <div className="mt-3 text-end">
                   <button
                     className="btn btn-warning"
                     onClick={() => handleSubmitQuiz()}
