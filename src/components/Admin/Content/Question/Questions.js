@@ -11,6 +11,7 @@ import {
   postCreateNewAnswerForQuiz,
   postCreateNewQuestionForQuiz,
 } from "../../../../services/apiService";
+import { toast } from "react-toastify";
 
 const Questions = (props) => {
   const [selectedQuiz, setSelectedQuiz] = useState({});
@@ -41,6 +42,9 @@ const Questions = (props) => {
     title: "",
     url: "",
   });
+
+  const [questionErrors, setQuestionErrors] = useState([]);
+  const [answerErrors, setAnswerErrors] = useState([]);
 
   const [listQuiz, setListQuiz] = useState([]);
 
@@ -153,27 +157,111 @@ const Questions = (props) => {
   const handleSubmitQuestionForQuiz = async () => {
     if (!questions || questions.length === 0) return;
 
-    await Promise.all(
-      questions.map(async (question) => {
-        const q = await postCreateNewQuestionForQuiz(
-          +selectedQuiz.value,
-          question.description,
-          question.imageFile
-        );
+    if (_.isEmpty(selectedQuiz)) {
+      toast.error("Please choose a quiz.");
+      return;
+    }
 
-        if (question.answers && question.answers.length > 0) {
-          await Promise.all(
-            question.answers.map(async (answer) => {
-              await postCreateNewAnswerForQuiz(
-                q.DT.id,
-                answer.description,
-                answer.isCorrect
-              );
-            })
-          );
+    let isValid = true;
+    let invalidQuestionIndex = -1;
+    let invalidAnswerIndex = -1;
+    let questionErrorIndices = [];
+    let answerErrorIndices = [];
+
+    // Check for empty answers
+    for (let i = 0; i < questions.length; i++) {
+      for (let j = 0; j < questions[i].answers.length; j++) {
+        if (!questions[i].answers[j].description) {
+          isValid = false;
+          invalidQuestionIndex = i;
+          invalidAnswerIndex = j;
+          answerErrorIndices.push({ questionIndex: i, answerIndex: j });
         }
-      })
-    );
+      }
+    }
+
+    if (!isValid) {
+      toast.error(
+        `Answer ${invalidAnswerIndex + 1} in Question ${
+          invalidQuestionIndex + 1
+        } cannot be empty.`
+      );
+      setAnswerErrors(answerErrorIndices);
+      return;
+    }
+
+    // Check for empty question descriptions
+    let isValidQ = true;
+    let invalidQuestionDescIndex = -1;
+    for (let i = 0; i < questions.length; i++) {
+      if (!questions[i].description) {
+        isValidQ = false;
+        invalidQuestionDescIndex = i;
+        questionErrorIndices.push(i);
+      }
+    }
+
+    if (!isValidQ) {
+      toast.error(
+        `Question ${invalidQuestionDescIndex + 1} description cannot be empty.`
+      );
+      setQuestionErrors(questionErrorIndices);
+      return;
+    }
+
+    // Reset error states if valid
+    setQuestionErrors([]);
+    setAnswerErrors([]);
+
+    try {
+      await Promise.all(
+        questions.map(async (question) => {
+          const q = await postCreateNewQuestionForQuiz(
+            +selectedQuiz.value,
+            question.description,
+            question.imageFile
+          );
+
+          if (question.answers && question.answers.length > 0) {
+            await Promise.all(
+              question.answers.map(async (answer) => {
+                await postCreateNewAnswerForQuiz(
+                  q.DT.id,
+                  answer.description,
+                  answer.isCorrect
+                );
+              })
+            );
+          }
+        })
+      );
+
+      // Clear state after successful submission
+      setQuestions([
+        {
+          id: uuidv4(),
+          description: "",
+          imageFile: "",
+          imageName: "",
+          answers: [
+            {
+              id: uuidv4(),
+              description: "",
+              isCorrect: false,
+            },
+            {
+              id: uuidv4(),
+              description: "",
+              isCorrect: false,
+            },
+          ],
+        },
+      ]);
+      setSelectedQuiz({});
+      toast.success("Questions submitted successfully!");
+    } catch (error) {
+      toast.error("Failed to submit questions. Please try again.");
+    }
   };
 
   const handlePreviewImage = (questionId) => {
@@ -205,21 +293,23 @@ const Questions = (props) => {
         <div className="mt-3 mb-2">Add Questions:</div>
         {questions &&
           questions.length > 0 &&
-          questions.map((question, idx) => {
+          questions.map((question, qIdx) => {
             return (
               <div className="q-main mb-3" key={question.id}>
                 <div className="questions-content">
                   <div className="form-floating description">
                     <input
                       type="text"
-                      className="form-control"
+                      className={`form-control ${
+                        questionErrors.includes(qIdx) ? "is-invalid" : ""
+                      }`}
                       placeholder="Name"
                       value={question.description}
                       onChange={(e) =>
                         handleOnchange("QUESTIONS", question.id, e.target.value)
                       }
                     />
-                    <label>Questions {idx + 1} Description</label>
+                    <label>Questions {qIdx + 1} Description</label>
                   </div>
                   <div className="group-upload">
                     <label className="label-upload" htmlFor={`${question.id}`}>
@@ -268,9 +358,14 @@ const Questions = (props) => {
                 </div>
                 {question.answers &&
                   question.answers.length > 0 &&
-                  question.answers.map((answer, idx) => {
+                  question.answers.map((answer, aIdx) => {
+                    const isAnswerInvalid = answerErrors.some(
+                      (error) =>
+                        error.questionIndex === qIdx &&
+                        error.answerIndex === aIdx
+                    );
                     return (
-                      <div className="answers-content">
+                      <div className="answers-content" key={answer.id}>
                         <input
                           type="checkbox"
                           className="form-check-input iscorrect"
@@ -287,7 +382,9 @@ const Questions = (props) => {
                         <div className="form-floating answer-name">
                           <input
                             type="type"
-                            className="form-control"
+                            className={`form-control ${
+                              isAnswerInvalid ? "is-invalid" : ""
+                            }`}
                             placeholder="@"
                             value={answer.description}
                             onChange={(e) =>
@@ -299,7 +396,7 @@ const Questions = (props) => {
                               )
                             }
                           />
-                          <label>Answers {idx + 1}</label>
+                          <label>Answers {aIdx + 1}</label>
                         </div>
                         <div className="btn-group">
                           <span
@@ -352,7 +449,7 @@ const Questions = (props) => {
           </div>
         )}
       </div>
-      {isPreViewImage === true && (
+      {isPreViewImage && (
         <Lightbox
           image={dataImagePreview.url}
           title={dataImagePreview.title}
