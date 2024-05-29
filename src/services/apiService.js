@@ -98,6 +98,14 @@ const postCreateNewAnswerForQuiz = (
   });
 };
 
+const postAssignQuiz = (userId, quizId) => {
+  return instance.post("api/v1/quiz-assign-to-user", { quizId, userId });
+};
+
+const getQuizWithQA = (quidId) => {
+  return instance.get(`api/v1/quiz-with-qa/${quidId}`);
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -115,4 +123,6 @@ export {
   deleteQuizForAdmin,
   postCreateNewQuestionForQuiz,
   postCreateNewAnswerForQuiz,
+  postAssignQuiz,
+  getQuizWithQA,
 };

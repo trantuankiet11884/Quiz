@@ -8,6 +8,7 @@ import _ from "lodash";
 import Lightbox from "react-awesome-lightbox";
 import {
   getAllQuiz,
+  getQuizWithQA,
   postCreateNewAnswerForQuiz,
   postCreateNewQuestionForQuiz,
 } from "../../../../services/apiService";
@@ -48,6 +49,13 @@ const QuizQA = (props) => {
   const [selectedQuiz, setSelectedQuiz] = useState({});
   const [listQuiz, setListQuiz] = useState([]);
 
+  async function urltoFile(url, filename, mimeType) {
+    const res = await fetch(url);
+    const buf = await res.arrayBuffer();
+    return new File([buf], filename, { type: mimeType });
+  }
+
+  // Fetch list of quizzes
   const fetchListQuiz = async () => {
     const rs = await getAllQuiz();
     if (rs?.EC === 0) {
@@ -61,9 +69,36 @@ const QuizQA = (props) => {
     }
   };
 
+  // Fetch quiz with questions and answers
+  const fetchQuizWithQA = async () => {
+    let rs = await getQuizWithQA(selectedQuiz.value);
+    if (rs && rs.EC === 0) {
+      let newQA = [];
+      for (let i = 0; i < rs.DT.qa.length; i++) {
+        let q = rs.DT.qa[i];
+        if (q.imageFile) {
+          q.imageName = `Question-${q.id}.png`;
+          q.imageFile = await urltoFile(
+            `data:image/png;base64,${q.imageFile}`,
+            `Question-${q.id}.png`,
+            "image/png"
+          );
+        }
+        newQA.push(q);
+      }
+      setQuestions(newQA);
+    }
+  };
+
+  // Fetch list of quizzes on component mount
   useEffect(() => {
     fetchListQuiz();
   }, []);
+
+  // Fetch quiz with questions and answers when selected quiz changes
+  useEffect(() => {
+    if (selectedQuiz && selectedQuiz.value) fetchQuizWithQA();
+  }, [selectedQuiz]);
 
   const handleAddRemoveQuestion = (type, id) => {
     if (type === "ADD") {
