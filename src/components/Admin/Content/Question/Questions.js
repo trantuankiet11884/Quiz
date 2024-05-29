@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./questions.scss";
 import Select from "react-select";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
@@ -6,14 +6,13 @@ import { RiImageAddFill } from "react-icons/ri";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 import Lightbox from "react-awesome-lightbox";
+import {
+  getAllQuiz,
+  postCreateNewAnswerForQuiz,
+  postCreateNewQuestionForQuiz,
+} from "../../../../services/apiService";
 
 const Questions = (props) => {
-  const options = [
-    { value: "EASY", label: "EASY" },
-    { value: "MEDIUM", label: "MEDIUM" },
-    { value: "HARD", label: "HARD" },
-  ];
-
   const [selectedQuiz, setSelectedQuiz] = useState({});
   const [questions, setQuestions] = useState([
     {
@@ -42,6 +41,25 @@ const Questions = (props) => {
     title: "",
     url: "",
   });
+
+  const [listQuiz, setListQuiz] = useState([]);
+
+  const fetchListQuiz = async () => {
+    const rs = await getAllQuiz();
+    if (rs?.EC === 0) {
+      let newQuiz = rs.DT.map((quiz) => {
+        return {
+          value: quiz.id,
+          label: `${quiz.id + " - " + quiz.description}`,
+        };
+      });
+      setListQuiz(newQuiz);
+    }
+  };
+
+  useEffect(() => {
+    fetchListQuiz();
+  }, []);
 
   const handleAddRemoveQuestion = (type, id) => {
     if (type === "ADD") {
@@ -132,8 +150,30 @@ const Questions = (props) => {
     }
   };
 
-  const handleSubmitQuestionForQuiz = () => {
-    console.log(questions);
+  const handleSubmitQuestionForQuiz = async () => {
+    if (!questions || questions.length === 0) return;
+
+    await Promise.all(
+      questions.map(async (question) => {
+        const q = await postCreateNewQuestionForQuiz(
+          +selectedQuiz.value,
+          question.description,
+          question.imageFile
+        );
+
+        if (question.answers && question.answers.length > 0) {
+          await Promise.all(
+            question.answers.map(async (answer) => {
+              await postCreateNewAnswerForQuiz(
+                q.DT.id,
+                answer.description,
+                answer.isCorrect
+              );
+            })
+          );
+        }
+      })
+    );
   };
 
   const handlePreviewImage = (questionId) => {
@@ -157,7 +197,7 @@ const Questions = (props) => {
         <div className="col-6 form-group">
           <label className="mb-2">Select Quiz</label>
           <Select
-            options={options}
+            options={listQuiz}
             onChange={setSelectedQuiz}
             defaultValue={selectedQuiz}
           />
@@ -322,5 +362,4 @@ const Questions = (props) => {
     </div>
   );
 };
-
 export default Questions;
