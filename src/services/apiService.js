@@ -106,6 +106,17 @@ const getQuizWithQA = (quidId) => {
   return instance.get(`api/v1/quiz-with-qa/${quidId}`);
 };
 
+const postUpsertQA = async (data) => {
+  try {
+    const response = await instance.post(`api/v1/quiz-upsert-qa`, {
+      ...data,
+    });
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -125,4 +136,5 @@ export {
   postCreateNewAnswerForQuiz,
   postAssignQuiz,
   getQuizWithQA,
+  postUpsertQA,
 };

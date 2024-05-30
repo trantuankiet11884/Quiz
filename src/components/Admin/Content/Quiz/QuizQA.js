@@ -11,6 +11,7 @@ import {
   getQuizWithQA,
   postCreateNewAnswerForQuiz,
   postCreateNewQuestionForQuiz,
+  postUpsertQA,
 } from "../../../../services/apiService";
 import { toast } from "react-toastify";
 
@@ -244,60 +245,33 @@ const QuizQA = (props) => {
       return;
     }
 
-    // Reset error states if valid
-    setQuestionErrors([]);
-    setAnswerErrors([]);
+    let questionsClone = _.cloneDeep(questions);
+    for (let i = 0; i < questionsClone.length; i++) {
+      if (questionsClone[i].imageFile) {
+        questionsClone[i].imageFile = await toBase64(
+          questionsClone[i].imageFile
+        );
+      }
+    }
 
     try {
-      await Promise.all(
-        questions.map(async (question) => {
-          const q = await postCreateNewQuestionForQuiz(
-            +selectedQuiz.value,
-            question.description,
-            question.imageFile
-          );
-
-          if (question.answers && question.answers.length > 0) {
-            await Promise.all(
-              question.answers.map(async (answer) => {
-                await postCreateNewAnswerForQuiz(
-                  q.DT.id,
-                  answer.description,
-                  answer.isCorrect
-                );
-              })
-            );
-          }
-        })
-      );
-
-      // Clear state after successful submission
-      setQuestions([
-        {
-          id: uuidv4(),
-          description: "",
-          imageFile: "",
-          imageName: "",
-          answers: [
-            {
-              id: uuidv4(),
-              description: "",
-              isCorrect: false,
-            },
-            {
-              id: uuidv4(),
-              description: "",
-              isCorrect: false,
-            },
-          ],
-        },
-      ]);
-      setSelectedQuiz({});
-      toast.success("Questions submitted successfully!");
+      const response = await postUpsertQA({
+        quizId: +selectedQuiz.value,
+        questions: questionsClone,
+      });
+      console.log(response);
     } catch (error) {
-      toast.error("Failed to submit questions. Please try again.");
+      console.error(error);
     }
   };
+
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
 
   const handlePreviewImage = (questionId) => {
     let questionsClone = _.cloneDeep(questions);
