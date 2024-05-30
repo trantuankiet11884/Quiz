@@ -6,6 +6,7 @@ import _ from "lodash";
 import Question from "./Question";
 import { toast } from "react-toastify";
 import ModalResult from "./ModalResult";
+import RightContent from "./Content/RightContent";
 
 const DetailsQuiz = (props) => {
   const location = useLocation();
@@ -150,7 +151,9 @@ const DetailsQuiz = (props) => {
           </button>
         </div>
       </div>
-      <div className="right-content">count down</div>
+      <div className="right-content">
+        <RightContent dataQuiz={dataQuiz} />
+      </div>
       <ModalResult
         show={isShowModalResuslt}
         setShow={setIsShowModalResult}
