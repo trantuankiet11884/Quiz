@@ -74,6 +74,15 @@
         &:hover {
           color: red;
         }
+
+        &.selected {
+          background-color: #146c43;
+          color: #fff;
+        }
+
+        &.clicked {
+          color: red;
+        }
       }
     }
   }
