@@ -18,6 +18,7 @@ import "./notfound.scss";
 import ManageQuiz from "./components/Admin/Content/Quiz/ManageQuiz";
 import Questions from "./components/Admin/Content/Question/Questions";
 import PrivateRoute from "./routes/PrivateRoute";
+import { Suspense } from "react";
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const NotFound = () => {
 
 export const Layout = (props) => {
   return (
-    <>
+    <Suspense>
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<HomePage />} />
@@ -90,6 +91,6 @@ export const Layout = (props) => {
         pauseOnHover
         theme="light"
       />
-    </>
+    </Suspense>
   );
 };
