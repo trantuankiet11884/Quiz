@@ -105,3 +105,8 @@ body {
     height: calc(100vh - 60px);
   }
 }
+.languages {
+  .dropdown-toggle::after {
+    display: none !important;
+  }
+}

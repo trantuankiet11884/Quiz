@@ -7,6 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { postLogout } from "../../services/apiService";
 import { toast } from "react-toastify";
 import { doLogout } from "../../redux/action/userAction";
+import Languages from "./Languages";
 const Header = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const account = useSelector((state) => state.user.account);
@@ -16,6 +17,9 @@ const Header = () => {
     navigate("/login");
   };
 
+  const handleClickBtnSignup = () => {
+    navigate("/register");
+  };
   const handleLogout = async () => {
     const res = await postLogout("account.email", account.refresh_token);
     if (res && res.EC === 0) {
@@ -56,7 +60,12 @@ const Header = () => {
                 >
                   Log in
                 </button>
-                <button className="btn-signup">Sign up</button>
+                <button
+                  className="btn-signup"
+                  onClick={() => handleClickBtnSignup()}
+                >
+                  Sign up
+                </button>
               </>
             ) : (
               <NavDropdown title="Settings" id="basic-nav-dropdown">
@@ -66,6 +75,7 @@ const Header = () => {
                 <NavDropdown.Item>Profile</NavDropdown.Item>
               </NavDropdown>
             )}
+            <Languages />
           </Nav>
         </Navbar.Collapse>
       </Container>
