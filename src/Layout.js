@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import "./notfound.scss";
 import ManageQuiz from "./components/Admin/Content/Quiz/ManageQuiz";
 import Questions from "./components/Admin/Content/Question/Questions";
+import PrivateRoute from "./routes/PrivateRoute";
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -48,11 +49,25 @@ export const Layout = (props) => {
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<HomePage />} />
-          <Route path="/user" element={<ListQuiz />} />
+          <Route
+            path="/user"
+            element={
+              <PrivateRoute>
+                <ListQuiz />
+              </PrivateRoute>
+            }
+          />
         </Route>
         <Route path="/quiz/:id" element={<DetailsQuiz />} />
 
-        <Route path="/admin" element={<Admin />}>
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <Admin />
+            </PrivateRoute>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="manage-user" element={<ManageUser />} />
           <Route path="manage-quizzes" element={<ManageQuiz />} />
