@@ -117,6 +117,10 @@ const postUpsertQA = async (data) => {
   }
 };
 
+const postLogout = (email, refresh_token) => {
+  return instance.post("api/v1/logout", { email, refresh_token });
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -137,4 +141,5 @@ export {
   postAssignQuiz,
   getQuizWithQA,
   postUpsertQA,
+  postLogout,
 };
