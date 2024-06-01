@@ -12,10 +12,11 @@ const DetailsQuiz = (props) => {
   const location = useLocation();
   const { id } = useParams();
   const quizId = id;
-
+  const [isSubmitQuiz, setIsSubmitQuiz] = useState(false);
+  const [isShowAnswer, setIsShowAnswer] = useState(false);
   const [dataQuiz, setDataQuiz] = useState([]);
   const [index, setIndex] = useState(0);
-  const [isShowModalResuslt, setIsShowModalResult] = useState(false);
+  const [isShowModalResult, setIsShowModalResult] = useState(false);
   const [dataModalResult, setDataModalResult] = useState({});
 
   useEffect(() => {
@@ -38,9 +39,10 @@ const DetailsQuiz = (props) => {
               image = item.image;
             }
             item.answers.isSelected = false;
+            item.answers.isCorrect = false;
             answers.push(item.answers);
           });
-          answers = _.orderBy(answers, ["id"], "asc");
+          answers = _.orderBy(answers, ["id"], ["asc"]);
           return { questionId: key, answers, questionDescription, image };
         })
         .value();
@@ -105,12 +107,37 @@ const DetailsQuiz = (props) => {
       let rs = await postSubmitQuiz(payload);
 
       if (rs && rs.EC === 0) {
-        setIsShowModalResult(true);
+        setIsSubmitQuiz(true);
         setDataModalResult({
           countCorrect: rs?.DT?.countCorrect,
           countTotal: rs?.DT?.countTotal,
           quizData: rs?.DT?.quizData,
         });
+        setIsShowModalResult(true);
+        // iscorrect submit show answer
+        if (rs.DT && rs.DT.quizData) {
+          let dataQuizClone = _.cloneDeep(dataQuiz);
+          console.log(dataQuizClone);
+          let a = rs.DT.quizData;
+          for (let q of a) {
+            for (let i = 0; i < dataQuizClone.length; i++) {
+              if (+q.questionId === +dataQuizClone[i].questionId) {
+                let newAnswers = [];
+                for (let j = 0; j < dataQuizClone[i].answers.length; j++) {
+                  let s = q.systemAnswers.find(
+                    (item) => +item.id === +dataQuizClone[i].answers[j].id
+                  );
+                  if (s) {
+                    dataQuizClone[i].answers[j].isCorrect = true;
+                  }
+                  newAnswers.push(dataQuizClone[i].answers[j]);
+                }
+                dataQuizClone[i].answers = newAnswers;
+              }
+            }
+          }
+          setDataQuiz(dataQuizClone);
+        }
       } else {
         toast.error(rs.EM);
       }
@@ -132,6 +159,8 @@ const DetailsQuiz = (props) => {
             dataQuiz={dataQuiz && dataQuiz.length > 0 ? dataQuiz[index] : []}
             index={index}
             handleCheckedBox={handleCheckedBox}
+            isShowAnswer={isShowAnswer}
+            isSubmitQuiz={isSubmitQuiz}
           />
         </div>
         <div className="footer">
@@ -147,6 +176,7 @@ const DetailsQuiz = (props) => {
           <button
             className="btn btn-success"
             onClick={() => handleClickFinish()}
+            disabled={isSubmitQuiz}
           >
             Finish
           </button>
@@ -160,9 +190,10 @@ const DetailsQuiz = (props) => {
         />
       </div>
       <ModalResult
-        show={isShowModalResuslt}
+        show={isShowModalResult}
         setShow={setIsShowModalResult}
         dataModalResult={dataModalResult}
+        setIsShowAnswer={setIsShowAnswer}
       />
     </div>
   );
