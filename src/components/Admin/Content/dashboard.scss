@@ -1,0 +1,22 @@
+.dashboard-container {
+  padding: 16px;
+  .title {
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .content {
+    display: flex;
+    .content-left {
+      width: 50%;
+      display: flex;
+      flex-wrap: wrap;
+      .child {
+        width: 50%;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
