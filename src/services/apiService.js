@@ -75,7 +75,7 @@ const putUpdateQuizForAdmin = (id, name, description, difficulty, image) => {
 };
 
 const deleteQuizForAdmin = (id) => {
-  return instance.delete(`/api/v1/quiz/${id}`);
+  return instance.delete(`api/v1/quiz/${id}`);
 };
 
 const postCreateNewQuestionForQuiz = (quiz_id, description, questionImage) => {
@@ -121,6 +121,10 @@ const postLogout = (email, refresh_token) => {
   return instance.post("api/v1/logout", { email, refresh_token });
 };
 
+const getOverview = () => {
+  return instance.get(`api/v1/overview`);
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -142,4 +146,5 @@ export {
   getQuizWithQA,
   postUpsertQA,
   postLogout,
+  getOverview,
 };

@@ -1,22 +1,44 @@
 .dashboard-container {
   padding: 16px;
+
   .title {
     font-size: 24px;
     font-weight: 600;
+    margin-bottom: 24px;
   }
+
   .content {
     display: flex;
+    gap: 16px;
+
     .content-left {
       width: 50%;
       display: flex;
       flex-wrap: wrap;
+      gap: 16px;
+
       .child {
-        width: 50%;
+        width: calc(50% - 10px);
+        border: 1px solid #ccc;
+        border-radius: 12px;
         height: 150px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+
+        .text-1 {
+        }
+
+        .text-2 {
+          font-size: 24px;
+        }
       }
+    }
+
+    .content-right {
+      width: 50%;
+      height: 400px; // Ensure this has a defined height
     }
   }
 }
