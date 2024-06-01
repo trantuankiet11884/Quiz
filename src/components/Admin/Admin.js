@@ -3,12 +3,16 @@ import AdminSideBar from "./SideBar";
 import "./admin.scss";
 import { FaBars } from "react-icons/fa";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Languages from "../Header/Languages";
 const Admin = (props) => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
+  const handleProfile = () => {
+    navigate("/profile");
+  };
   return (
     <div className="admin-container">
       <div className="admin-sidebar">
@@ -25,8 +29,9 @@ const Admin = (props) => {
           </span>
           <div className="rightside">
             <NavDropdown title="Settings" id="basic-nav-dropdown">
-              <NavDropdown.Item>Logout</NavDropdown.Item>
-              <NavDropdown.Item>Profile</NavDropdown.Item>
+              <NavDropdown.Item onClick={handleProfile}>
+                Profile
+              </NavDropdown.Item>
             </NavDropdown>
             {/* <Languages /> */}
           </div>

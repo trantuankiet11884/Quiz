@@ -1,3 +1,4 @@
+import React from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -8,11 +9,13 @@ import { postLogout } from "../../services/apiService";
 import { toast } from "react-toastify";
 import { doLogout } from "../../redux/action/userAction";
 import Languages from "./Languages";
+
 const Header = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const account = useSelector((state) => state.user.account);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleClickBtnLogin = () => {
     navigate("/login");
   };
@@ -20,8 +23,9 @@ const Header = () => {
   const handleClickBtnSignup = () => {
     navigate("/register");
   };
+
   const handleLogout = async () => {
-    const res = await postLogout("account.email", account.refresh_token);
+    const res = await postLogout(account.email, account.refresh_token);
     if (res && res.EC === 0) {
       dispatch(doLogout());
       toast.success(res.EM);
@@ -31,10 +35,13 @@ const Header = () => {
     }
   };
 
+  const handleProfile = () => {
+    navigate("/profile");
+  };
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        {/* <Navbar.Brand href="#home">Logo</Navbar.Brand> */}
         <NavLink className="navbar-brand" to="/">
           LOGO
         </NavLink>
@@ -54,25 +61,21 @@ const Header = () => {
           <Nav>
             {isAuthenticated === false ? (
               <>
-                <button
-                  className="btn-login"
-                  onClick={() => handleClickBtnLogin()}
-                >
+                <button className="btn-login" onClick={handleClickBtnLogin}>
                   Log in
                 </button>
-                <button
-                  className="btn-signup"
-                  onClick={() => handleClickBtnSignup()}
-                >
+                <button className="btn-signup" onClick={handleClickBtnSignup}>
                   Sign up
                 </button>
               </>
             ) : (
               <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <NavDropdown.Item onClick={() => handleLogout()}>
+                <NavDropdown.Item onClick={handleProfile}>
+                  Profile
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={handleLogout}>
                   Logout
                 </NavDropdown.Item>
-                <NavDropdown.Item>Profile</NavDropdown.Item>
               </NavDropdown>
             )}
             <Languages />

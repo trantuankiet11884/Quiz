@@ -19,6 +19,7 @@ import ManageQuiz from "./components/Admin/Content/Quiz/ManageQuiz";
 import Questions from "./components/Admin/Content/Question/Questions";
 import PrivateRoute from "./routes/PrivateRoute";
 import { Suspense } from "react";
+import Profile from "./components/User/Profile";
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ export const Layout = (props) => {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 

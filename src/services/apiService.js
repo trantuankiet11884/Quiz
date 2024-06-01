@@ -125,6 +125,17 @@ const getOverview = () => {
   return instance.get(`api/v1/overview`);
 };
 
+const postChangePassword = (current_password, new_password) => {
+  return instance.post("api/v1/change-password", {
+    current_password,
+    new_password,
+  });
+};
+
+const getHistory = () => {
+  return instance.get("api/v1/history");
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -147,4 +158,6 @@ export {
   postUpsertQA,
   postLogout,
   getOverview,
+  postChangePassword,
+  getHistory,
 };
